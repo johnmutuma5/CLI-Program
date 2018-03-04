@@ -22,9 +22,19 @@ class Store ():
 
     def add_user (self, user_obj):
         '''
-            returns the user_obj added
+            return: the user_obj added
         '''
         username = user_obj.username
         if self.__class__.users.get(username): assert 0, 'Username already exists'
         self.__class__.users[username] = user_obj
+        print("User {} successfully added".format(username))
         return self.__class__.users[username]
+
+    def add_comment (self, comment_obj):
+        '''
+            return: the comment_obj added
+        '''
+        comment_id = comment_obj.id
+        self.__class__.comments[comment_id] = comment_obj
+        print ('Comment {} successfully posted'.format(comment_id))
+        return self.__class__.comments[comment_id]

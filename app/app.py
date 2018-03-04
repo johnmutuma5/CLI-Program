@@ -28,7 +28,7 @@ def main ():
             # post_comment params: string msg
             msg = input('Write your thoughts here: ')
             comm = getattr(user, input_action['method'])(msg)
-            print("\nComment posted")
+            store.add_comment(comm)
 
 
 
