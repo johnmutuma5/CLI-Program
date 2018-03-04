@@ -29,11 +29,16 @@ def main ():
             msg = input('Write your thoughts here: ')
             comm = getattr(user, 'post_comment')(msg)
             store.add_comment(comm)
-            
+
         elif input_action['type'] == 'view_comments':
             # view_comments params: store
-            getattr(user, 'view_comments')(store)
+            getattr(user, 'view_comments')()
 
+        elif input_action['type'] == 'edit_comment':
+            # edit_comment params: comment_id, new_msg
+            comm_id = input('Enter targeted comment id: ')
+            new_msg = input('Enter replacement message: ')
+            getattr(user, 'edit_comment')(comm_id, new_msg)
 
 
 

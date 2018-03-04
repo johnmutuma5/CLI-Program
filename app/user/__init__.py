@@ -1,5 +1,6 @@
 from datetime import datetime
 from app.user.comment import Comment
+from app import store
 
 class User ():
     '''
@@ -9,6 +10,12 @@ class User ():
             post_comment:
                 params: msg
                 return: comment
+            view_comments:
+                params: None
+                return: None / prints comments
+            edit_comment:
+                params: comm_id, new_msg
+                return: new_msg / replaces comment's msg with new_msg
     '''
     users = 0
 
@@ -34,15 +41,20 @@ class User ():
             return: comment
         '''
         timestamp = datetime.now()
-        comment = Comment (msg, timestamp, self.id)
+        comment = Comment (msg, timestamp, self.id, self.username)
         return comment
 
-    def view_comments (self, store):
+    def view_comments (self):
         comments = store.comments
 
         for comment in sorted(comments.values(), key = lambda comment: comment.id):
             print(comment)
 
+    def edit_comment (self, comm_id, new_msg):
+        comments = store.comments
+        target = comments[comm_id]
+        target.msg = new_msg
+        return target.msg
 
     def indexView ():
         user_input = input (
@@ -55,7 +67,7 @@ class User ():
 
         input_action = {
             '1': {'type': 'post_comment'},
-            '2': {'type': 'view_comments'},
+            '2': {'type': 'edit_comment'},
             '3': {'type': 'view_comments'}
         }[user_input]
 

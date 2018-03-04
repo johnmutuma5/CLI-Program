@@ -13,15 +13,17 @@ class Comment ():
         Comment.comments += 1
         return 'COM{:0>5}'.format(Comment.comments)
 
-    def __init__ (self, msg, timestamp, author_id):
+    def __init__ (self, msg, timestamp, author_id, author_name):
         self.id = self.__class__.genCommentId ()
         self.msg = msg
         self.timestamp = timestamp
-        self.author = author_id
+        self.author_id = author_id
+        self.author_name = author_name
+
 
     def __str__ (self):
         return '''
         {}
         {}: {}
         {}
-        '''.format(self.author, self.id, self.msg, self.timestamp)
+        '''.format(self.author_name, self.id, self.msg, self.timestamp)
