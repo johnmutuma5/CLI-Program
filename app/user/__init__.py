@@ -1,7 +1,7 @@
 from datetime import datetime
 from app.user.comment import Comment
 from app import store
-from helpers import wrap_output
+from helpers.decorators import wrap_output
 
 class User ():
     '''
