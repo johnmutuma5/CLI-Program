@@ -36,7 +36,7 @@ class User ():
             '2': {'type': 'edit_comment'},
             '3': {'type': 'view_comments'},
             '4': {'type': 'logout'}
-        }[user_input]
+        }.get(user_input)
 
         return input_action
 
@@ -44,7 +44,6 @@ class User ():
     def genUserId ():
         '''generates an eight-character user id e.g. USR00001
         '''
-
         User.users += 1
         return 'USR{:0>5}'.format(User.users)
 
@@ -80,7 +79,7 @@ class User ():
             print('\nUNSUCCESSFUL Comment id NOT found')
             return None
 
-        if target.author_id == self.id:
+        if target.author_id == self.id or self.__class__.__name__ == 'Admin':
             target.msg = new_msg
             print('\nComment edited successfully\n')
             return target.msg
@@ -90,6 +89,7 @@ class User ():
 
 
 class Moderator (User):
+    moderators = 0
     @classmethod
     def indexView (cls):
         user_input = input (
@@ -99,13 +99,34 @@ class Moderator (User):
                 2. Edit a comment
                 3. View comments
                 4. Delete a comment
+                5. Logout
                 Reply with an option as above: ''')
 
         input_action = {
             '1': {'type': 'post_comment'},
             '2': {'type': 'edit_comment'},
             '3': {'type': 'view_comments'},
-            '4': {'type': 'delete_comment'}
-        }[user_input]
+            '4': {'type': 'delete_comment'},
+            '5': {'type': 'logout'}
+        }.get(user_input)
 
         return input_action
+
+    @staticmethod
+    def genUserId ():
+        '''generates an eight-character user id e.g. MOD00001
+        '''
+        Moderator.moderators += 1
+        return 'MOD{:0>5}'.format(Moderator.moderators)
+
+    def delete_comment (self, comm_id):
+        comments = store.comments
+        try:
+            comments.pop(comm_id)
+            print('\nComment DELETED successfully')
+        except KeyError:
+            print('\nUNSUCCESSFUL: could not find a comment with that id')
+
+
+class Admin (Moderator, User):
+    ...

@@ -1,10 +1,17 @@
-from app import User, Comment
+from app import User, Moderator, Admin, Comment
 from app import store
 from datetime import datetime
 
 session = {'user': None}
 
 def main ():
+
+    mod = Moderator ('mod', 'math')
+    admin = Admin ('admin', 'math')
+    store.add_user (mod)
+    store.add_user (admin)
+
+
     render_homepage ()
 
     user = session['user']
@@ -18,7 +25,13 @@ def main ():
 
 
 
+def sign_up ():
+    username = input ("SIGN UP: \n\tEnter your username: ")
+    password = input ("\tEnter your password: ")
 
+    user = User (username, password)
+    store.add_user (user) # could raise AssertionError if username exists
+    print('Success, you can now login')
 
 
 def login ():
@@ -35,15 +48,12 @@ def login ():
     else:
         assert 0, 'Invalid username or password'
 
-
-def sign_up ():
-    username = input ("SIGN UP: \n\tEnter your username: ")
-    password = input ("\tEnter your password: ")
-
-    user = User (username, password)
-    store.add_user (user)
-    print('Success, you can now login')
-
+def logout ():
+    user = session.get('user')
+    if user:
+        print('Goodbye {}'.format(user.username))
+        session.pop('user')
+    render_homepage ()
 
 def render_homepage ():
     if session.get('user'):
@@ -58,12 +68,15 @@ def render_homepage ():
     input_method = {
         '1': login,
         '2': sign_up
-    }[user_input] # an elegant replacement for python's lack of switch case
+    }.get(user_input) # an elegant replacement for python's lack of switch case
 
-    try:
-        input_method ()
-    except AssertionError as e:
-        print (e)
+    if input_method:
+        try:
+            input_method ()
+        except AssertionError as e:
+            print (e)
+    else:
+        print('\nINVALID input choice. Try again: ')
 
     return render_homepage ()
 
@@ -71,6 +84,10 @@ def render_homepage ():
 
 def render_indexViewFor (user):
     input_action = user.__class__.indexView ()
+
+    if not input_action:
+        print('\nINVALID input choice. Try again: ')
+        render_indexViewFor (user)
 
     if input_action['type'] == 'post_comment':
         # post_comment params: string msg
@@ -88,9 +105,10 @@ def render_indexViewFor (user):
         new_msg = input('Enter replacement message: ')
         getattr(user, 'edit_comment')(comm_id, new_msg)
 
+    elif input_action['type'] == 'delete_comment':
+        getattr(user, 'delete_comment') ()
+
     while not input_action['type'] == 'logout':
         render_indexViewFor (user)
 
-    print('Goodbye {}'.format(user.username))
-    session.pop('user')
-    render_homepage ()
+    logout()
