@@ -20,4 +20,8 @@ class Comment ():
         self.author = author_id
 
     def __str__ (self):
-        return self.msg
+        return '''
+        {}
+        {}: {}
+        {}
+        '''.format(self.author, self.id, self.msg, self.timestamp)

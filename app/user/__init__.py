@@ -38,7 +38,11 @@ class User ():
         return comment
 
     def view_comments (self, store):
-        
+        comments = store.comments
+
+        for comment in sorted(comments.values(), key = lambda comment: comment.id):
+            print(comment)
+
 
     def indexView ():
         user_input = input (
@@ -50,9 +54,9 @@ class User ():
                 Reply with an option as above: ''')
 
         input_action = {
-            '1': {'type': 'post_comment', 'method': 'post_comment'},
-            '2': 'edit_comment(com_id)',
-            '3': 'view_comments'
+            '1': {'type': 'post_comment'},
+            '2': {'type': 'view_comments'},
+            '3': {'type': 'view_comments'}
         }[user_input]
 
         return input_action

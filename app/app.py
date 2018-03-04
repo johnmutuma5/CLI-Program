@@ -27,9 +27,12 @@ def main ():
         if input_action['type'] == 'post_comment':
             # post_comment params: string msg
             msg = input('Write your thoughts here: ')
-            comm = getattr(user, input_action['method'])(msg)
+            comm = getattr(user, 'post_comment')(msg)
             store.add_comment(comm)
-
+            
+        elif input_action['type'] == 'view_comments':
+            # view_comments params: store
+            getattr(user, 'view_comments')(store)
 
 
 
