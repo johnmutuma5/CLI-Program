@@ -74,7 +74,12 @@ class User ():
 
     def edit_comment (self, comm_id, new_msg):
         comments = store.comments
-        target = comments[comm_id]
+        target = comments.get(comm_id)
+
+        if not target:
+            print('\nUNSUCCESSFUL Comment id NOT found')
+            return None
+
         if target.author_id == self.id:
             target.msg = new_msg
             print('\nComment edited successfully\n')
