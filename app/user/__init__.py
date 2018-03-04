@@ -54,6 +54,7 @@ class User ():
         comments = store.comments
         target = comments[comm_id]
         target.msg = new_msg
+        print('\nComment edited successfully\n')
         return target.msg
 
     def indexView ():
