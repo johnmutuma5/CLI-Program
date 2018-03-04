@@ -1,6 +1,7 @@
 from datetime import datetime
 from app.user.comment import Comment
 from app import store
+from helpers import wrap_output
 
 class User ():
     '''
@@ -18,6 +19,26 @@ class User ():
                 return: new_msg / replaces comment's msg with new_msg
     '''
     users = 0
+
+    @classmethod
+    def indexView (cls):
+        user_input = input (
+            '''
+            What would you like to do?
+                1. Post a comment
+                2. Edit a comment
+                3. View comments
+                4. Logout
+                Reply with an option as above: ''')
+
+        input_action = {
+            '1': {'type': 'post_comment'},
+            '2': {'type': 'edit_comment'},
+            '3': {'type': 'view_comments'},
+            '4': {'type': 'logout'}
+        }[user_input]
+
+        return input_action
 
     @staticmethod
     def genUserId ():
@@ -44,6 +65,7 @@ class User ():
         comment = Comment (msg, timestamp, self.id, self.username)
         return comment
 
+    @wrap_output
     def view_comments (self):
         comments = store.comments
 
@@ -53,23 +75,32 @@ class User ():
     def edit_comment (self, comm_id, new_msg):
         comments = store.comments
         target = comments[comm_id]
-        target.msg = new_msg
-        print('\nComment edited successfully\n')
-        return target.msg
+        if target.author_id == self.id:
+            target.msg = new_msg
+            print('\nComment edited successfully\n')
+            return target.msg
 
-    def indexView ():
+        print('Comment NOT edited. You can only edit your own comments')
+        return None
+
+
+class Moderator (User):
+    @classmethod
+    def indexView (cls):
         user_input = input (
             '''
             What would you like to do?
                 1. Post a comment
                 2. Edit a comment
                 3. View comments
+                4. Delete a comment
                 Reply with an option as above: ''')
 
         input_action = {
             '1': {'type': 'post_comment'},
             '2': {'type': 'edit_comment'},
-            '3': {'type': 'view_comments'}
+            '3': {'type': 'view_comments'},
+            '4': {'type': 'delete_comment'}
         }[user_input]
 
         return input_action
